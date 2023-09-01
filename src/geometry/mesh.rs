@@ -1,4 +1,4 @@
-use glium::{Display, IndexBuffer, VertexBuffer};
+use glium::{ IndexBuffer, VertexBuffer};
 
 use crate::geometry::vertex::Vertex;
 pub struct Mesh {
@@ -44,7 +44,9 @@ impl Mesh {
                 "f" => {
                     for i in 1..line_splited.len() {
                         let indexes_splted: Vec<&str> = line_splited[i].split("/").collect();
-                        let vertex_index = indexes_splted[0].parse::<u16>().unwrap()-1;
+                        let vertex_index = indexes_splted[0].parse::<u16>().unwrap() - 1;
+                        vert_buff[vertex_index as usize].normal =
+                            vert_normal[indexes_splted[2].parse::<usize>().unwrap() - 1];
                         ind_buff.push(vertex_index);
                     }
                 }
@@ -58,7 +60,8 @@ impl Mesh {
                 display,
                 glium::index::PrimitiveType::TrianglesList,
                 &ind_buff,
-            ).unwrap(),
+            )
+            .unwrap(),
         }
     }
 }
