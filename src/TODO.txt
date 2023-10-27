@@ -1,6 +1,0 @@
-input system
-node system and scene system
-textures
-normal mapping
-materials
-shadows
