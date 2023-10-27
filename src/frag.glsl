@@ -4,9 +4,9 @@ in vec3 frag_pos;
 in vec3 normal_dir;
 uniform vec3 light_pos;
 void main() {
-    vec3 light_color = vec3(0.15, 0.6, 0.35);
-    vec3 object_color = vec3(0.5, 0.2, 0.9);
-    float ambientStrength = 0.1;
+    vec3 light_color = vec3(1.0);
+    vec3 object_color = vec3(0.04, 0.28, 0.09);
+    float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * light_color;
 
     // diffuse 

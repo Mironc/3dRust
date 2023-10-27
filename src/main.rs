@@ -50,14 +50,15 @@ fn main() {
         Shader::from_source(include_str!("vert.glsl"), gl::VERTEX_SHADER),
         Shader::from_source(include_str!("frag.glsl"), gl::FRAGMENT_SHADER),
     );
-    let model_mat = Transform::with_position(vec3(0., 0., 4.));
+    let mut model_mat = Transform::with_position(vec3(0., 0., 4.));
+    model_mat.rotate(vec3(0.0, 180., 0.0));
     let model = MeshRenderer {
-        mesh: Mesh::from_str(include_str!("Cube.obj")),
+        mesh: Mesh::from_str(include_str!("MonkeyHead.obj")),
         program: program.clone(),
     };
     world.create_entity().with(model).with(model_mat).build();
-    let mut camera_trans = Transform::with_position(vec3(3., 1., 0.));
-    camera_trans.rotate(vec3(0.0, 3.79, 0.0));
+    let mut camera_trans = Transform::with_position(vec3(0., 1., 0.));
+    camera_trans.rotate(vec3(0.0, 0., 0.0));
     let mut camera = Camera::new(
         60.,
         window.get_size().0 as f32 / window.get_size().1 as f32,
@@ -110,8 +111,8 @@ fn main() {
                                    let mut input = world.write_resource::<Input>();
                                    input.on_loop_end(); */
             glfw.poll_events();
-            delta_time = glfw.get_time() - start;
-            println!("{}", 1.0 / delta_time);
+            delta_time = glfw.get_time() - start; /*
+                                                  println!("{}", 1.0 / delta_time); */
         }
     }
 }
