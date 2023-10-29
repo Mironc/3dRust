@@ -1,13 +1,12 @@
 mod basic_components;
-mod resources;
-use std::alloc::GlobalAlloc;
+use std::{sync::Arc, time::Instant};
 
 use basic_components::{
-    camera::{Camera, CameraMatrixes, CameraSys, MAINCAMERA}, /*
-                                                             fly_camera::FlyCamera,
-                                                             input::{Axis, Input}, */
+    camera::{Camera, CameraMatrixes, CameraSys}, /*
+                                                 fly_camera::FlyCamera,
+                                                 input::{Axis, Input}, */
     light::Light,
-    rendereable::{MeshRenderSys, MeshRenderer},
+    rendereable::{MeshRenderSys, MeshRenderer, PROGRAM_BUFFER},
     transform::Transform,
 };
 use corrosed_graphic::data_prelude::*;
@@ -29,8 +28,8 @@ fn main() {
         .create_window(800, 800, "!", WindowMode::Windowed)
         .unwrap();
     window.make_current();
-    window.set_key_polling(true); /*
-                                  glfw.set_swap_interval(glfw::SwapInterval::Sync(0)); */
+    window.set_key_polling(true);
+    glfw.set_swap_interval(glfw::SwapInterval::Sync(0));
     /*
     let mut input = Input::new();
     input.add_axis(Axis::new("Horizontal", "a", "d"));
@@ -50,23 +49,31 @@ fn main() {
         Shader::from_source(include_str!("vert.glsl"), gl::VERTEX_SHADER),
         Shader::from_source(include_str!("frag.glsl"), gl::FRAGMENT_SHADER),
     );
-    let mut model_mat = Transform::with_position(vec3(0., 0., 4.));
-    model_mat.rotate(vec3(0.0, 180., 0.0));
-    let model = MeshRenderer {
-        mesh: Mesh::from_str(include_str!("MonkeyHead.obj")),
-        program: program.clone(),
-    };
-    world.create_entity().with(model).with(model_mat).build();
+    PROGRAM_BUFFER
+        .lock()
+        .unwrap()
+        .insert(program.id(), program.clone());
+    let mesh = Arc::new(Mesh::from_str(include_str!("MonkeyHead.obj")));
+    for i in 0..10 {
+        let mut model_mat = Transform::with_position(vec3(-3. + i as f32, 0., 4.));
+        model_mat.rotate(vec3(0.0, 180., 0.0));
+        let model = MeshRenderer {
+            mesh: Arc::clone(&mesh),
+            program: program.id(),
+        };
+        world.create_entity().with(model).with(model_mat).build();
+    }
+
     let mut camera_trans = Transform::with_position(vec3(0., 1., 0.));
     camera_trans.rotate(vec3(0.0, 0., 0.0));
-    let mut camera = Camera::new(
-        60.,
+    let camera = Camera::new(
+        120.,
         window.get_size().0 as f32 / window.get_size().1 as f32,
         0.01,
         1024.,
-    ); /*
-       MAINCAMERA.set(camera); */
-    world
+    );
+    /* MAINCAMERA.set(camera); */
+    let _ent = world
         .create_entity()
         .with(camera)
         .with(camera_trans)
@@ -81,8 +88,8 @@ fn main() {
     });
 
     unsafe {
-        gl::Enable(gl::DEPTH_TEST); /*
-                                    gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE); */
+        gl::Enable(gl::DEPTH_TEST);
+        gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
     };
     let mut delta_time = 0.0;
     while !window.should_close() {
@@ -110,9 +117,10 @@ fn main() {
             window.swap_buffers(); /*
                                    let mut input = world.write_resource::<Input>();
                                    input.on_loop_end(); */
+
             glfw.poll_events();
-            delta_time = glfw.get_time() - start; /*
-                                                  println!("{}", 1.0 / delta_time); */
+            delta_time = glfw.get_time() - start;
+            println!("{}", 1.0 / delta_time);
         }
     }
 }

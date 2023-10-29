@@ -22,6 +22,7 @@ impl Camera {
     pub fn set_aspect(&mut self, aspect: f32) {
         self.aspect = aspect;
     }
+    //rn is useless because i using opengl
     pub fn build_perspective_infinite(&self) -> Mat4 {
         Mat4::perspective_infinite_lh(self.fov.to_radians(), self.aspect, self.znear)
     }

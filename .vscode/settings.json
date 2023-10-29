@@ -2,7 +2,6 @@
     "rust-analyzer.linkedProjects": [
         ".\\Cargo.toml",
         ".\\crates\\corrosed_graphic\\Cargo.toml",
-        ".\\crates\\corrosed_graphic\\Cargo.toml",
-        ".\\crates\\corrosed_graphic\\Cargo.toml"
+        ".\\crates\\corrosed_resources\\Cargo.toml",
     ]
 }

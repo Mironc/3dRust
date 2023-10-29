@@ -1,0 +1,11 @@
+graphic -
+    remove glfw(it kinda slow) and use raw context instead
+    implement textures and texture atlasing
+    fbo,rbo,post-process shaders,
+    extension for glsl as example #include,
+    add text rendering rusttype
+    
+resources - 
+    basic fs interaction,
+    loading some stuff,
+    loaded object memoization,
